@@ -15,9 +15,9 @@ class UsersController < ApplicationController
     def update
     	@user = UserDetail.find_by(:username => params[:username])
 
-    	if @user.update_attributes(user_params)
+    	if @user.update( user_params )
     		# 成功時の処理
-    	   @user.save
+    	    redirect_to 'index'
     	else
       		render 'edit'
     	end
@@ -25,6 +25,6 @@ class UsersController < ApplicationController
   private
 
     def user_params
-      params.permit(:name, :nickname, :about)
+      params.require(:username).permit(:name, :nickname, :about)
     end
 end

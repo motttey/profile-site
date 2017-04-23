@@ -1,10 +1,10 @@
-<% provide(:username, "Edit user") %>
+<% provide(:url, users_index_path(@user)) %>
 <h1>Update your profile</h1>
 
 
-<%= form_for(@user.username) do |form| %>
+<%= form_for @user, :url => {:action => 'update'} do |form| %>
 
-<p>name: <%=form.text_field :name, :size => 16 ,:placeholder => @user.name %> </p>
+<p>name: <%=form.text_field :name, :size => 16 ,placeholder: @user.name %> </p>
 <p>nickname: <%=form.text_field :nickname, :size => 16 ,:placeholder => @user.nickname
 %> </p>
 <p>about:<br /><%=form.text_area :about, :colse =>40, :rows => 3 ,:placeholder => @user.about %> </p>

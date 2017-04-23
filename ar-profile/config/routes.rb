@@ -6,5 +6,6 @@ Rails.application.routes.draw do
   get 'users/show/:username' => 'users#show'
   get 'users/edit/:username' => 'users#edit'
   post 'users/edit/:username' => 'users#update'
+  patch 'users/edit/:username' => 'users#edit'  
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
