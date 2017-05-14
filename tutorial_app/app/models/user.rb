@@ -19,10 +19,12 @@ class User < ActiveRecord::Base
   # ハッシュ化したセキュアなパスワードの実装
   has_secure_password
   # パスワードのバリデーション
-  validates( :password, presence: true, length: { minimum: 6 } )
+  # update時の空を許可する
+  validates :password, presence: true, length: { minimum: 6 }, allow_nil: true
 
   # fixture向けのdigestメソッドの追加用
   # 渡された文字列のハッシュ値を返す
+  # 新規ユーザ登録時にはオブジェクト生成時のhas_secure_passwordのバリデーションが実行される
   def User.digest(string)
     cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST :
                                                   BCrypt::Engine.cost

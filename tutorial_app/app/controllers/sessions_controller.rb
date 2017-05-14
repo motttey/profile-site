@@ -10,7 +10,7 @@ class SessionsController < ApplicationController
       log_in user
       # rememberチェックボックス
       params[:session][:remember_me] == '1' ? remember(user) : forget(user)
-      redirect_to user # (= user_url(user))
+      redirect_back_or user # (= user_url(user))
     else
       # エラーメッセージを作成する
       # flash.nowのメッセージはその後リクエストが発生したときに消滅, flashはきえない
