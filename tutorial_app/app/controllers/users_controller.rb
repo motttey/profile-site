@@ -31,9 +31,12 @@ class UsersController < ApplicationController
     if @user.save
       # 保存の成功をここで扱う。
       # flashヘンスウに代入したメッセージは, リダイレクト直後のページで表示できるようになる
-      log_in @user
-      flash[:success] = "Welcome to the Sample App!"
-      redirect_to @user
+      # log_in @user
+      # flash[:success] = "Welcome to the Sample App!"
+      # redirect_to @user
+      @user.send_activation_email
+      flash[:info] = "Please check your email to activate your account."
+      redirect_to root_url
     else
       # 失敗したらnewを表示
       render 'new'

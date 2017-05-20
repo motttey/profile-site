@@ -28,4 +28,6 @@ Rails.application.routes.draw do
   #　下の行かくと自動で表7.1のRESTful URIにアプリケーションが対応する
   resources :users
 
+  # editだけ許可, アカウントの有効化
+  resources :account_activations, only: [:edit]
 end

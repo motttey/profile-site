@@ -1,7 +1,11 @@
 # コントローラ名には複数形を使い、モデル名には単数形を用いる
 class User < ActiveRecord::Base
 
-  attr_accessor :remember_token
+  attr_accessor :remember_token, :activation_token
+
+  # Account Activation用のコード
+  before_save { email.downcase! }
+  before_create :create_activation_digest
 
   # email validation 用の正規表現
   # 大文字が定数を意味する
@@ -45,14 +49,40 @@ class User < ActiveRecord::Base
   end
 
   # 渡されたトークンがダイジェストと一致したらtrueを返す
-  def authenticated?(remember_token)
-    # 記憶ダイジェストがnilの場合にfalseを返す
-    return false if remember_digest.nil?
-    BCrypt::Password.new(remember_digest).is_password?(remember_token)
+  # トークンがダイジェストと一致したらtrueを返す
+  def authenticated?(attribute, token)
+    # Rubyのメタプログラミング機能により複数のdigestに対応
+    digest = send("#{attribute}_digest")
+    return false if digest.nil?
+    BCrypt::Password.new(digest).is_password?(token)
   end
 
   # ユーザーのログイン情報を破棄する
   def forget
     update_attribute(:remember_digest, nil)
   end
+
+  # アカウントを有効にする
+  def activate
+    update_attribute(:activated,    true)
+    update_attribute(:activated_at, Time.zone.now)
+  end
+
+  # 有効化用のメールを送信する
+  def send_activation_email
+    UserMailer.account_activation(self).deliver_now
+  end
+  
+  private
+
+    # メールアドレスをすべて小文字にする
+    # def downcase_email
+    #   self.email = email.downcase
+    # end
+
+    # 有効化トークンとダイジェストを作成および代入する
+    def create_activation_digest
+      self.activation_token  = User.new_token
+      self.activation_digest = User.digest(activation_token)
+    end
 end
